@@ -10,8 +10,26 @@ const statusEl = document.querySelector('.status');
 const hintEl = document.querySelector('.hint');
 const delaySlider = document.getElementById('delaySlider');
 const delayDisplay = document.getElementById('delayDisplay');
+const courtesyToggle = document.getElementById('courtesyToggle');
 const incognitoToggle = document.getElementById('incognitoToggle');
 const incognitoDismiss = document.getElementById('incognitoDismiss');
+const themeToggle = document.getElementById('themeToggle');
+const themeStorageKey = 'courtesy-theme';
+
+const setTheme = (theme) => {
+  document.body.classList.toggle('theme-light', theme === 'light');
+  themeToggle.setAttribute('aria-pressed', theme === 'light');
+  themeToggle.setAttribute(
+    'aria-label',
+    theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode',
+  );
+  localStorage.setItem(themeStorageKey, theme);
+};
+
+const storedTheme = localStorage.getItem(themeStorageKey);
+const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+const initialTheme = storedTheme || (prefersLight ? 'light' : 'dark');
+setTheme(initialTheme);
 
 const setListeningState = (listening) => {
   statusEl.classList.toggle('listening', listening);
@@ -97,4 +115,9 @@ incognitoToggle.addEventListener('click', (event) => {
 
 incognitoDismiss.addEventListener('click', () => {
   document.body.classList.remove('incognito');
+});
+
+themeToggle.addEventListener('click', () => {
+  const nextTheme = document.body.classList.contains('theme-light') ? 'dark' : 'light';
+  setTheme(nextTheme);
 });
