@@ -1,4 +1,4 @@
-# STFU 🤫
+# courtesyecho 🤫
 
 i was at bombay airport. some dude was watching reels on full volume and laughing loudly. asking nicely doesn't work anymore. me being me, didn't have the courage to speak up.
 
