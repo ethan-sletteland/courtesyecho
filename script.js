@@ -16,7 +16,9 @@ const incognitoDismiss = document.getElementById('incognitoDismiss');
 const setListeningState = (listening) => {
   statusEl.classList.toggle('listening', listening);
   statusEl.classList.toggle('paused', !listening);
-  hintEl.textContent = listening ? 'tap to stop' : 'tap to shut them up';
+  if (hintEl) {
+    hintEl.textContent = listening ? 'tap to stop' : 'tap below for Courtesy Mode';
+  }
 };
 
 // Update delay display when slider changes.
@@ -69,7 +71,7 @@ const stopListening = async () => {
 };
 
 // Toggle listening on body click.
-document.body.addEventListener('click', async () => {
+courtesyToggle.addEventListener('click', async () => {
   if (isToggling) {
     return;
   }
