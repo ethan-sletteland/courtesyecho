@@ -1,62 +1,140 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Courtesy Echo</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🤫</text></svg>"
+    />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STFU</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🤫</text></svg>">
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: #000;
-            font-family: monospace;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .emoji {
-            font-size: 80px;
-            margin-bottom: 20px;
-        }
-
-        .text {
-            font-size: 48px;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
-
-        .hint {
-            font-size: 16px;
-            color: #666;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="emoji">🤫</div>
-    <div class="text">STFU</div>
-    <div class="hint">tap to shut them up</div>
-    <script>
-        document.body.addEventListener('click', async () => {
-            const audioContext = new AudioContext();
-            const mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const source = audioContext.createMediaStreamSource(mediaStream);
-            const delayNode = audioContext.createDelay(5);
-            const gainNode = audioContext.createGain();
-            delayNode.delayTime.value = 2;
-            gainNode.gain.value = 0.8;
-            source.connect(delayNode);
-            delayNode.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            document.querySelector('.hint').style.display = 'none';
-        }, { once: true });
-    </script>
-</body>
-
+  <body>
+    <div class="app">
+      <div class="text">Courtesy Echo </div>
+      <!-- <div class="hint">tap to shut them up</div> -->
+      <br />
+      <div class="status paused">
+        <div class="wave-container">
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+          <div class="wave-bar"></div>
+        </div>
+      </div>
+      <div class="controls" onclick="event.stopPropagation()">
+        <div class="slider-container">
+          <span class="slider-label">Delay:</span>
+          <input type="range" id="delaySlider" min="0.5" max="5" step="0.5" value="2" />
+          <span class="delay-value"><span id="delayDisplay">2.0</span>s</span>
+        </div>
+        <button class="incognito-toggle" type="button" id="incognitoToggle">
+          Incognito
+        </button>
+      </div>
+    </div>
+    <div class="sheet" aria-hidden="true">
+      <div class="sheet-header">
+        <div>
+          <div class="sheet-title">Q3 Forecast Allocation</div>
+          <div class="sheet-subtitle">Regional revenue distribution - confidential</div>
+        </div>
+        <div>
+          <div class="sheet-subtitle">Last updated: 08/22</div>
+          <button class="incognito-dismiss" type="button" id="incognitoDismiss">
+            Exit
+          </button>
+        </div>
+      </div>
+      <table class="sheet-grid">
+        <thead>
+          <tr>
+            <th>Region</th>
+            <th>Segment</th>
+            <th>Plan</th>
+            <th>Actual</th>
+            <th>Variance</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>North America</td>
+            <td>Enterprise</td>
+            <td>$1.42M</td>
+            <td>$1.38M</td>
+            <td>-2.8%</td>
+            <td>On Track</td>
+          </tr>
+          <tr>
+            <td>Europe</td>
+            <td>Mid-Market</td>
+            <td>$980K</td>
+            <td>$1.04M</td>
+            <td>+6.1%</td>
+            <td>Above</td>
+          </tr>
+          <tr>
+            <td>Asia Pacific</td>
+            <td>Enterprise</td>
+            <td>$1.12M</td>
+            <td>$1.07M</td>
+            <td>-4.5%</td>
+            <td>Watch</td>
+          </tr>
+          <tr>
+            <td>LATAM</td>
+            <td>SMB</td>
+            <td>$410K</td>
+            <td>$392K</td>
+            <td>-4.4%</td>
+            <td>Watch</td>
+          </tr>
+          <tr>
+            <td>MEA</td>
+            <td>Public</td>
+            <td>$620K</td>
+            <td>$655K</td>
+            <td>+5.6%</td>
+            <td>Above</td>
+          </tr>
+          <tr>
+            <td>North America</td>
+            <td>Mid-Market</td>
+            <td>$860K</td>
+            <td>$828K</td>
+            <td>-3.7%</td>
+            <td>On Track</td>
+          </tr>
+          <tr>
+            <td>Europe</td>
+            <td>SMB</td>
+            <td>$540K</td>
+            <td>$512K</td>
+            <td>-5.2%</td>
+            <td>Watch</td>
+          </tr>
+          <tr>
+            <td>Asia Pacific</td>
+            <td>Public</td>
+            <td>$720K</td>
+            <td>$748K</td>
+            <td>+3.9%</td>
+            <td>On Track</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="sheet-note">
+        Notes: Variance accounts for seasonal adjustments and pipeline carryover. Review with finance.
+      </div>
+    </div>
+    <script type="module" src="/script.js"></script>
+  </body>
 </html>
