@@ -28,3 +28,29 @@ Courtesy Echo is a tiny web toy that feeds your mic audio back with a controllab
 ## deploy
 
 `???`
+
+## native app (capacitor)
+
+Install dependencies:
+
+`npm i`
+
+Build the web assets:
+
+`npm run build`
+
+Add a platform (one-time):
+
+`npx cap add ios`
+`npx cap add android`
+
+Sync web assets to native projects:
+
+`npm run cap:sync`
+
+Open the native IDEs:
+
+`npm run cap:open:ios`
+`npm run cap:open:android`
+
+Update `appId` and `appName` in `capacitor.config.json` if you want custom values.
