@@ -10,6 +10,8 @@ const statusEl = document.querySelector('.status');
 const hintEl = document.querySelector('.hint');
 const delaySlider = document.getElementById('delaySlider');
 const delayDisplay = document.getElementById('delayDisplay');
+const gainSlider = document.getElementById('gainSlider');
+const gainDisplay = document.getElementById('gainDisplay');
 const courtesyToggle = document.getElementById('courtesyToggle');
 const incognitoToggle = document.getElementById('incognitoToggle');
 const incognitoDismiss = document.getElementById('incognitoDismiss');
@@ -48,6 +50,14 @@ delaySlider.addEventListener('input', (e) => {
   }
 });
 
+gainSlider.addEventListener('input', (e) => {
+  const value = Number.parseFloat(e.target.value);
+  gainDisplay.textContent = value.toFixed(2);
+  if (gainNode) {
+    gainNode.gain.value = value;
+  }
+});
+
 const startListening = async () => {
   audioContext = new AudioContext();
   mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -55,7 +65,7 @@ const startListening = async () => {
   delayNode = audioContext.createDelay(5);
   gainNode = audioContext.createGain();
   delayNode.delayTime.value = Number.parseFloat(delaySlider.value);
-  gainNode.gain.value = 0.8;
+  gainNode.gain.value = Number.parseFloat(gainSlider.value);
   sourceNode.connect(delayNode);
   delayNode.connect(gainNode);
   gainNode.connect(audioContext.destination);
