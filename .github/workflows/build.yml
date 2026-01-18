@@ -1,0 +1,91 @@
+on:
+  workflow_dispatch:
+    inputs:
+      git-revision:
+        type: string
+        required: true
+        default: main
+      publish-build:
+        type: boolean
+        default: true
+      deploy-to-dev:
+        type: boolean
+        default: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    outputs:
+      build-version: ${{ steps.generate-build-version.outputs.build-version }}
+      deploy-to-dev: ${{ inputs.deploy-to-dev }}
+      publish-build: ${{ inputs.publish-build }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.git-revision }}
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Generate build version
+        run: |
+          BUILD_VERSION="$(git rev-parse --short HEAD)"
+          echo "build-version=${BUILD_VERSION}" >> ${GITHUB_OUTPUT}
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Build assets
+        run: |
+          npm ci
+          npm run build
+
+      - name: Package build
+        run: |
+          echo "Bar!" > foo.txt
+          zip package.zip foo.txt
+
+      - name: Configure AWS credentials
+        if: ${{ inputs.publish-build == 'true' }}
+        uses: aws-actions/configure-aws-credentials@v5.1.1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Push package to S3
+        if: ${{ inputs.publish-build == 'true' }}
+        run: aws s3 cp ./package.zip s3://${{ vars.PACKAGES_S3_BUCKET_NAME}/${{ inputs.build-version }}
+
+      - name: Annotate workflow run
+        if: ${{ inputs.publish-build == 'true' }}
+        run: echo "::notice title=Build version::${{ inputs.build-version }}"
+
+  # Required hack, due to "if:" statement incompatibility with "uses:" in deploy job
+  deploy_gate:
+    name: Deploy Gate
+    needs: [build]
+    if: ${{
+          needs.build.outputs.publish-build == 'true' &&
+          needs.build.outputs.deploy-to-dev == 'true' &&
+          needs.build.result == 'success'
+        }}
+    run-on: ubuntu-latest
+    steps:
+      - run: exit 0
+
+  deploy:
+    name: Deploy
+    needs: [build, deploy_gate]
+    secrets:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    uses: ./.github/workflows/deploy.yml
+    with:
+      environment: dev
+      package-version: ${{ needs.build.outputs.build-version }}
