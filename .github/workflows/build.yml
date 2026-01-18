@@ -60,7 +60,7 @@ jobs:
 
       - name: Push package to S3
         if: ${{ inputs.publish-build == 'true' }}
-        run: aws s3 cp ./package.zip s3://${{ vars.PACKAGES_S3_BUCKET_NAME}/${{ inputs.build-version }}
+        run: aws s3 cp ./package.zip s3://${{ vars.PACKAGES_S3_BUCKET_NAME }}/${{ inputs.build-version }}
 
       - name: Annotate workflow run
         if: ${{ inputs.publish-build == 'true' }}
