@@ -47,7 +47,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v5.1.1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECREET_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Fetch assets
@@ -60,7 +60,7 @@ jobs:
         run: |
           unzip ${{ inputs.package-version }}.zip -d ./package
 
-          aws s3 rm ${{ vars.SITE_S3_BUCKET_NAME }} --recursive
+          aws s3 rm s3://${{ vars.SITE_S3_BUCKET_NAME }} --recursive
 
           aws s3 cp --recursive \
             ./package/ \
