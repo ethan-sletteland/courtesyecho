@@ -48,8 +48,11 @@ jobs:
 
       - name: Package build
         run: |
-          echo "Bar!" > foo.txt
-          zip package.zip foo.txt
+          zip package.zip \
+            index.html \
+            script.js \
+            style.css
+
 
       - name: Configure AWS credentials
         if: ${{ inputs.publish-build }}
