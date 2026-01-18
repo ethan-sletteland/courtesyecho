@@ -72,7 +72,9 @@ jobs:
 
       - name: Annotate workflow run
         if: ${{ inputs.publish-build }}
-        run: echo "::notice title=Build version::${{ inputs.build-version }}"
+        env:
+          BUILD_VERSION: ${{ steps.generate-build-version.outputs.build-version }}
+        run: echo "::notice title=Build version::${BUILD_VERSION}"
 
   # Required hack, due to "if:" statement incompatibility with "uses:" in deploy job
   deploy_gate:
